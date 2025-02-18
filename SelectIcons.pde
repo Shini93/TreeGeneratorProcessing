@@ -28,7 +28,7 @@ class SelectIcon{
     icons.add(dummy);
   }
   
-  void drawIcon(){ //<>// //<>//
+  void drawIcon(){ //<>// //<>// //<>//
     if(visible == false)
       return;
     int Abstand = round( 0.1* (size.x / float (icons.size())));

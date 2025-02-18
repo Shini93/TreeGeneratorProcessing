@@ -55,30 +55,32 @@ class Forest {
   }
   
   void drawForest(boolean init){
-    float w = + maxPos.x - minPos.x;
-    float h =   maxPos.y - minPos.y;
+    // float w = + maxPos.x - minPos.x;
+    // float h =   maxPos.y - minPos.y;
+    float w = 16 / 9 * trunkHeight;
+    float h = trunkHeight;
+    println("height  "+ trunkHeight);
     tG.endDraw();
     
-    int x = displayWidth;
-    int y = displayHeight;
+    //int x = displayWidth;
+    //int y = displayHeight;
     
     
-    if(w/h < float(x)/float(y)){
-       w = h * (float(x)/float(y));
-    }
-    else{
-       h = w * (float(y)/float(x));  
-    }
-    if(w < 200)
-      w = 200;
-    if(h < 200)
-      h = 200;
+    //if(w/h < float(x)/float(y)){
+    //   w = h * (float(x)/float(y));
+    //}
+    //else{
+    //   h = w * (float(y)/float(x));  
+    //}
+    //if(w < 200)
+    //  w = 200;
+    //if(h < 200)
+    //  h = 200;
     if(init == true)  
       initTreeGraphic(new PVector(w,h));
     else
       tG.beginDraw();
     tG.pushMatrix();
-    float dW = -(maxPos.x/minPos.x);
     int offset = 0;
     if(minPos.x*1.1 < -0.5*tG.width){
       offset = -round(1.1*minPos.x + 0.5*tG.width);

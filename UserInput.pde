@@ -112,11 +112,13 @@ void setReset() {
     fill(255);
     text(t, 0.5*displayWidth-0.5*w, 0.5*displayHeight);
   } else {
+    state = Calculating;
     isReset = false;
     setupProgram();
     seedUsed = false;
     setJSON("last"); 
   }
+  timeSinceStart = millis();
 }
 
 /**************************************************

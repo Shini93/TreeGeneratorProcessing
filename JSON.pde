@@ -10,7 +10,7 @@ void setJSON(String name){
   }
   Jslider.setInt("Seed",seed);
   
-  addJSON(name,Jslider); //<>//
+  addJSON(name,Jslider);
 }
 
 JSONObject getJSONALL() {
@@ -26,7 +26,7 @@ JSONObject getJSON(String name){
 
 void addJSON(String name, JSONObject obj){
   //JSONObject json = new JSONObject();
-  JSONObject json = getJSONALL();  //<>//
+  JSONObject json = getJSONALL(); 
   json.setJSONObject(name, obj);
-  saveJSONObject(json,"data/new.json"); //<>//
-} //<>//
+  saveJSONObject(json,"data/new.json");
+}

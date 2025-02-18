@@ -24,6 +24,7 @@ class Leaf {
       int blue = round(random(20) * whitness);
       //if(pos.z < 0)
       //  return;
+      tG.strokeWeight(strokeWeight);
       tG.fill(color(red, green, blue), leafTransparency);
       tG.ellipse(pos.x, pos.y, leafSize * mul * random(0.5, 1.3), leafSize * mul * random(0.5, 1.3));
       return;

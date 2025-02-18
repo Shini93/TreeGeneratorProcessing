@@ -79,6 +79,7 @@ PVector posScreen;
 
 double timeSinceLastDraw = 0;
 double neededTime = 0;
+float timeSinceStart = 0;
 
 ArrayList <String> help = new ArrayList <String>();
 
@@ -91,6 +92,11 @@ PGraphics tG, lG, cG, oG;    //Trunk image, leaf image, combined Image, overlay 
 PImage leafimg, pedalimg, trunkimg, dummyLight;
 PImage dummy;
 PImage[] leafImgs;
+
+Byte state = 2;
+Byte Calculating = 0;
+Byte finishedDrawing = 1;
+Byte finishedAll = 2;
 
 Forest forest;
 SliderHandler sH;
@@ -108,7 +114,7 @@ selfRandom leafRandom;
 
 
 void setup() {
-  fullScreen(P2D, 1);
+  fullScreen(P2D, 2);
   if (autoMode == true)
     seed = round(random(99999999));
   //videoExport = new VideoExport(this, "pgraphics.mp4");
@@ -191,40 +197,14 @@ void saveCanvasToExternalStorage(String fileName) {
 *are started here!
 **************************************************/
 void draw() {
-  /**************************************************
-  *Only started when calculations are finished 
-  *and branches have to be drawn
-  **************************************************/
-  if (isDrawing == true) {
-    forest.drawForest(false);
+  if(state == Calculating){
+    forest.trees[0].calcBranches();
+    if(forest.trees[0].twigs.size() <= 0)
+      state = finishedDrawing;
     resizeI();
   }
-
-  /**************************************************
-  *Starts the drawing process, only executed once 
-  *per drawing session
-  **************************************************/
-  if (wasDrawn == false && isDrawing == false) {
-    forest.drawForest(true);
-    resizeI();
-    println("isDrawing = false");
-    finished = false;
-  }
-
-  /**************************************************
-  *Starts this only after the drawing is finished
-  **************************************************/
-  if (wasDrawn == true && isDrawing == false) {
-    if (finished == true) {
-      autoPics(); //saves a pc automatically and randomizes sliders if wanted
-    }
-
-    /**************************************************
-    *draws a light on the tree. 
-    *Changes and calculates for each pixel
-    **************************************************/
-    if (finished == false) {
-      println("------------------------------");
+  if(state == finishedDrawing){
+    println("------------------------------");
       dummyLight = createGraphics(tG.width, tG.height, P2D);
       dummyLight = tG.get();
       PVector sun = new PVector(sunPos.x*tG.width, sunPos.y*tG.height);
@@ -233,8 +213,55 @@ void draw() {
       resizeI();
       finished = true;
       resetSliderUsed();
-    }
+      state = finishedAll;
   }
+  if (wasResized == true) {
+    resizeI();
+  }
+  ///**************************************************
+  //*Only started when calculations are finished 
+  //*and branches have to be drawn
+  //**************************************************/
+  //if (isDrawing == true) {
+  //  forest.drawForest(false);
+  //  resizeI();
+  //}
+
+  ///**************************************************
+  //*Starts the drawing process, only executed once 
+  //*per drawing session
+  //**************************************************/
+  //if (wasDrawn == false && isDrawing == false) {
+  //  forest.drawForest(true);
+  //  resizeI();
+  //  println("isDrawing = false");
+  //  finished = false;
+  //}
+
+  ///**************************************************
+  //*Starts this only after the drawing is finished
+  //**************************************************/
+  //if (wasDrawn == true && isDrawing == false) {
+  //  if (finished == true) {
+  //    autoPics(); //saves a pc automatically and randomizes sliders if wanted
+  //  }
+
+  //  /**************************************************
+  //  *draws a light on the tree. 
+  //  *Changes and calculates for each pixel
+  //  **************************************************/
+  //  if (finished == false) {
+  //    println("------------------------------");
+  //    dummyLight = createGraphics(tG.width, tG.height, P2D);
+  //    dummyLight = tG.get();
+  //    PVector sun = new PVector(sunPos.x*tG.width, sunPos.y*tG.height);
+  //    setLight(sun, 0.001*sunIntensity*sqrt(tG.width*tG.width+tG.height*tG.height));
+  //    wasDrawn = true;
+  //    resizeI();
+  //    finished = true;
+  //    resetSliderUsed();
+  //  }
+  //}
   if (wasResized == true) {
     resizeI();
   }
@@ -255,7 +282,9 @@ void draw() {
   text("Seed:  "+seed, width - 30 - textWidth("Seed:  xxxxxxx"), height - 3*g.textSize);
   
   fill(255);
-  text("Time:  " + neededTime, width - 30 - textWidth("Seed:  xxxxxxx"), height - 2*g.textSize);
+  text("Stack:  " + forest.trees[0].twigs.size(), width - 30 - textWidth("Seed:  xxxxxxx"), height - 2*g.textSize);
+  
+  text("Time:  " + int(floor(0.001 * (millis() - timeSinceStart) / 60)) + ":" + int(floor(0.001 * (millis() - timeSinceStart))) % 60, width - 30 - textWidth("Seed:  xxxxxxx"), height - g.textSize);
 
   updateButtons();
 
@@ -366,7 +395,7 @@ void loadImages() {
 }
 
 void initGraphics() {
-  initTreeGraphic(new PVector(displayWidth, displayHeight));
+  initTreeGraphic(new PVector(trunkHeight * 2, trunkHeight));
   initOverlayGraphic();
   tG.beginDraw();
   tG.clear();
@@ -377,7 +406,7 @@ void initGraphics() {
 void initTreeGraphic(PVector size) {
   if (size == null)
     size = new PVector(100, 100);
-  tG = createGraphics(round(size.x), round(size.y),P2D);
+  tG = createGraphics(round(size.x), round(trunkHeight),P2D);
   tG.beginDraw();
   tG.clear();
 }
@@ -418,19 +447,7 @@ color getRandomTwigColor(float lightning) {
 
 //Does not work yet, I think
 void changeLeafs() {
-  if (mouseX <=810 && mouseY >= width/2+50)
-    return;
-  if (leafChanges == true)
-    addLeafs();
-  else
-    removeLeafs();
-}
 
-void addLeafs() {
-  //forest.trees[0].leafs.add(new Leaf(new PVector(mouseX, mouseY)));
-}
-
-void removeLeafs() {
 }
 
 //0-100
@@ -438,7 +455,7 @@ float lightMul(float dist, float intensity, float sNormal) {
   float number = -0.005/sNormal;
   float dummy =  number*dist+2;
   return 1 + intensity*dummy;
-}
+} 
 
 //changes color of stuff
 void setLight(PVector lightPos, float intensity) {
@@ -536,6 +553,7 @@ void autoPics() {
       saveCanvasToExternalStorage(name);
     } else {
       path = "../../treePics/"+name;
+      println("saved to "+path);
       tG.save(path);
     }
 

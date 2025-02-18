@@ -1,4 +1,4 @@
-class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
+class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
   PVector startPos;   //Position where this branch starts from
   PVector endPos;     //Position where this branch finishes not really needed atm
   PVector widthBranch;    //startWidth, endWidth
@@ -58,12 +58,12 @@ class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //
      *If the pc overflows, then make this value bigger
      *Checks if RAM is free, if not it stops calculations
      **************************************************/
-    long freeMemory = runtime.freeMemory();
-    if ((freeMemory / 1024 / 1024) < 12) {
-      println("heaplimit reached    "  + (freeMemory / 1024 / 1024));
-      forest.trees[0].twigs.remove(forest.trees[0].twigs.size() -1 );
-      return;
-    }
+    //long freeMemory = runtime.freeMemory();
+    //if ((freeMemory / 1024 / 1024) < 12) {
+    //  println("heaplimit reached    "  + (freeMemory / 1024 / 1024));
+    //  forest.trees[0].twigs.remove(forest.trees[0].twigs.size() -1 );
+    //  return;
+    //}
 
     /**************************************************
      *Finds out where to spawn new childs in the future
@@ -98,7 +98,7 @@ class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //
     widthBranch = new PVector(twigRandom.sRandom(startTwigWidth, endTwigWidth) * wParent, 0);
     parentAngleXY = angleParentXY;
     parentAngleZ = angleParentZ;
-    calcTwigPath();
+    //calcTwigPath();
   }
 
   void initBranchStart(int id, PVector p0, int maxLength) {
@@ -115,7 +115,7 @@ class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //
     angleBranchZ = 0;
     float wStart = trunkWidth;
     widthBranch = new PVector(wStart, trunkEndWidth);
-    calcTwigPath();
+    //calcTwigPath();
   }
 
   /**************************************************
@@ -139,7 +139,7 @@ class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //
       int i = round(branchperc[k] *  (maxParts )) ;
       int l =round(  lengthBranch * ((maxParts - float(i))/float(maxParts)));//round(lO * (branchParts - i));
       float endWidth = widthPerc[k] - widthPercdW[k] * (i - 1);
-      forest.trees[treeID].twigs.add(0, new Branch(treeID, ePos[i], l, int(endWidth), AngleChildXY[i], AngleChildZ, forest.trees[0].twigs.size(), gen + 1));
+      forest.trees[treeID].twigs.add(0, new Branch(treeID, ePos[i], l, int(endWidth), AngleChildXY[i], AngleChildZ, forest.trees[0].twigs.size(), gen + 1)); //<>// //<>//
     }
   }
 
@@ -242,7 +242,7 @@ class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //
     //Needs revisit if needed at all
     if (millis() > timeStartCalc + 1000 * maxTimeToCalc)
       return;
-    nrBranches++;
+    nrBranches++; //<>// //<>//
 
     float endAngleXY = angleToGo + angleBranchXY;
     float endAngleZ = angleToGo + angleBranchZ;
@@ -335,16 +335,16 @@ class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //
       float y2 = y + 0.5 * sin(prevAngleXY[i]) * widthDist ;
 
       //check if maxdist has been reached
-      if (forest.trees[0].twigs.size() > 0) {
-        PVector posRoot = forest.trees[0].twigs.get(0).startPos;
-        PVector posHeight = forest.trees[0].twigs.get(0).endPos;
-        float dRoot = dist(posRoot.x, posRoot.y, x+startPos.x, y+startPos.y);
-        float dHeight = dist(posHeight.x, posHeight.y, x+startPos.x, y+startPos.y);
+      //if (forest.trees[0].twigs.size() > 0) { //<>// //<>//
+      //  PVector posRoot = forest.trees[0].twigs.get(0).startPos;
+      //  PVector posHeight = forest.trees[0].twigs.get(0).endPos;
+      //  float dRoot = dist(posRoot.x, posRoot.y, x+startPos.x, y+startPos.y);
+      //  float dHeight = dist(posHeight.x, posHeight.y, x+startPos.x, y+startPos.y);
 
-        if (dRoot > maxDistFromCore || dHeight > maxDistFromCore) {
-          stop = true;
-        }
-      }
+      //  if (dRoot > maxDistFromCore || dHeight > maxDistFromCore) {
+      //    stop = true;
+      //  }
+      //}
       maxParts++;
 
       prevKoord = new PVector(x, y, z);
@@ -360,8 +360,7 @@ class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //
     checkBorder(endPos);
 
     //check child branches
-    println("Branch calc  " + branchID);
-    checkNewBranch(endPoss, round(l), dW, prevAngleXY, 0);      //Adds new Branches
+    checkNewBranch(endPoss, round(l), dW, prevAngleXY, 0);      //Adds new Branches //<>// //<>//
     checkNewLeafs(endPoss, round(l), dW, prevAngleXY, prevAngleZ);  //Adds new Leafs
     endangleBranchXY = prevAngleXY[branchParts - 1];
     endangleBranchZ = 0;
@@ -441,6 +440,7 @@ class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //
       randomPos.x += random(-7, 7);
       randomPos.y += random(-7, 7);
       forest.trees[0].leafs.add(new Leaf(randomPos, endWidth));
+      forest.trees[0].leafs.remove(forest.trees[0].leafs.size() - 1);
     }
   }
 
@@ -511,6 +511,28 @@ class Branch { //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //
       twigShape.texture(trunkimg);
     } else
       twigShape.fill(getRandomTwigColor(0.9));
+      //if(gen == 0)
+      //  twigShape.fill(0);
+      //else if(gen == 1)
+      //  twigShape.fill(#FF0000);
+      //else if(gen == 2)
+      //  twigShape.fill(#00FF00);
+      //else if(gen == 3)
+      //  twigShape.fill(#FF00FF);
+      //else if(gen == 4)
+      //  twigShape.fill(#FF00FF);
+      //else if(gen == 5)
+      //  twigShape.fill(#FFFF00);
+      //else if(gen == 6)
+      //  twigShape.fill(#00FFFF);
+      //else if(gen == 7)
+      //  twigShape.fill(#F0F0F0);
+      //else if(gen == 8)
+      //  twigShape.fill(#0F0F0F);
+      //else
+      //  twigShape.fill(#DDDDDD);
+      
+      
     twigShape.strokeWeight(strokeWeight);
     twigShape.stroke(0);
     return twigShape;
